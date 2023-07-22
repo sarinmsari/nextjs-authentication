@@ -3,15 +3,46 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
+import { toast } from "react-hot-toast";
 
 function SignUp() {
+  const router = useRouter();
   const [user, setUser] = React.useState({
     email: "",
     password: "",
     username: "",
   });
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
 
-  const onSignUp = async () => {};
+  const onSignUp = async () => {
+    try {
+      setButtonDisabled(true);
+      setLoading(true);
+      const response = await axios.post("/api/users/signup", user);
+      console.log("signup success ", response.data);
+      router.push("/login");
+    } catch (error: any) {
+      console.log(error.message);
+
+      toast.error(error.message);
+    } finally {
+      setButtonDisabled(false);
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (
+      user.email.length > 0 &&
+      user.password.length > 0 &&
+      user.username.length > 0
+    ) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -56,8 +87,9 @@ function SignUp() {
       <button
         className="m-3 border-gray-300 border focus:outline-none p-2 rounded-lg"
         onClick={onSignUp}
+        disabled={buttonDisabled}
       >
-        SignUp
+        {loading ? "...." : "SignUp"}
       </button>
       <Link href="/login">Visit Login page</Link>
     </div>
