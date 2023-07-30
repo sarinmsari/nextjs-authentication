@@ -73,7 +73,7 @@ function LogIn() {
         {loading ? "...." : "LogIn"}
       </button>
       <span>
-        Don't have account?
+        Don&apos;t have account?
         <Link href="/signup" className="p-1">
           SignUp
         </Link>
